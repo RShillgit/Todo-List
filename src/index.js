@@ -11,7 +11,7 @@ const currentProjects = document.querySelector('.projects');
 const createNewTodoButton = document.getElementById('createNewTodo');
 const createTodoButton = document.getElementById('createTodo');
 const todoCreation = document.querySelector('.todoItemCreation');
-
+const todoInputFields = document.querySelectorAll('.todoInfo');
 const inputTitle = document.getElementById('title');
 const inputDescription = document.getElementById('description');
 const inputDueDate = document.getElementById('dueDate');
@@ -20,6 +20,12 @@ const inputPriority = document.getElementById('priority');
 // Array of Projects
 let  projects = [];
 
+
+// Factory function that creates projects
+function todoProject(name) {
+    this.name = name;
+    this.info = [];
+}
 
 // Factory function that creates Todo Item objects
 function todoItem(title, description, dueDate, priority) {
@@ -31,26 +37,22 @@ function todoItem(title, description, dueDate, priority) {
 
 
 // Displays projects in the sidebar
-function projectDisplay() {
+function projectHandler() {
 
-    // No project display
-    if (projects.length < 1) {
-        currentProjects.innerText = 'No Current Projects';
-    }
-    else {
-        currentProjects.innerText = '';
-        // Create divs for each project
-        projects.forEach(project => {
-            const projectFolder = document.createElement('div');
-            projectFolder.classList = 'projectFolder';
-            projectFolder.innerText = project;
-        
-            currentProjects.appendChild(projectFolder);
-        });
-    }
+    // Clear no projects message
+    currentProjects.innerText = '';
 
+    // Create div for the projects
+    projects.forEach(project => {
+        const projectFolder = document.createElement('div');
+        projectFolder.classList = 'projectFolder';
+        projectFolder.innerText = project.name;
+    
+        console.log(project)
+        currentProjects.appendChild(projectFolder); 
+    })
 };
-projectDisplay();
+
 
 
 // Handles Project Creation and Selection
@@ -60,16 +62,20 @@ function sidebarInteraction() {
     newProjectButton.addEventListener('click', () => {return projectCreation.style.display = 'Flex'});
     createProjectButton.addEventListener('click', () => {
 
-        // Push project to projects array
-        projects.push(inputProjectName.value)
+        // Make new project object
+        const projectObject = new todoProject(inputProjectName.value)
+
+        // Push new project object to projects array
+        projects.push(projectObject);
     
         // Clear input field 
         inputProjectName.value = '';
-        
+
         // Remove project creation window
         projectCreation.style.display = 'none';
 
-        return projectDisplay();
+        // Run the project handler function
+        return projectHandler();
     });
 };
 sidebarInteraction();
@@ -86,7 +92,16 @@ function todoInteration() {
         const newTodoPriority = inputPriority.value;
 
         // Create new todoItem with these values
-        const object = new todoItem(newTodoTitle, newTodoDescription, newTodoDueDate, newTodoPriority);
+        const todoObject = new todoItem(newTodoTitle, newTodoDescription, newTodoDueDate, newTodoPriority);
+        console.log(todoObject);
+
+        // Clear input fields 
+        todoInputFields.forEach(field => field.value = '');
+
+        // Remove todo creation window
+        todoCreation.style.display = 'none';
+
+        // Add this todo item to the selected project
 
         // Send this object to a todo card display function
     });
