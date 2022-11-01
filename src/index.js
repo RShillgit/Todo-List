@@ -40,6 +40,7 @@ function todoItem(title, description, dueDate, priority) {
     this.description = description;
     this.dueDate = dueDate;
     this.priority = priority;
+    this.displayed = false;
 };
 
 
@@ -69,6 +70,9 @@ function sidebarInteraction() {
     // Handle User Project Creation
     newProjectButton.addEventListener('click', () => {return projectCreation.style.display = 'Flex'});
     createProjectButton.addEventListener('click', () => {
+
+        // Error Handling
+        if (inputProjectName.value.length < 1) return; 
 
         // Make new project object
         const projectObject = new todoProject(inputProjectName.value)
@@ -129,6 +133,51 @@ function displayTodoSection() {
     todoSection.style.display = 'Flex';
 
     // Check the project for any todo items and display them  
+    if (selectedProject.info.length >= 1) {
+        selectedProject.info.forEach(todoItem => {
+
+            // If the item is not displayed yet
+            if (todoItem.displayed == false) {
+
+                // Div that holds todo Items
+                const todoItemsContainer = document.querySelector('.todoItems'); 
+
+                // Create a card that displays the todo item information
+                const itemCardDiv = document.createElement('div');
+                itemCardDiv.classList = 'itemCard';
+
+                // Title
+                const itemCardTitle = document.createElement('p');
+                itemCardTitle.innerHTML = `Title: ${todoItem.title}`;
+
+                // Description
+                const itemCardDescription = document.createElement('p');
+                itemCardDescription.innerHTML = `Description: ${todoItem.description}`;
+
+                // Due Date
+                const itemCardDate = document.createElement('p');
+                itemCardDate.innerHTML = `Due Date: ${todoItem.dueDate}`;
+
+                // Priority
+                const itemCardPriority = document.createElement('p');
+                itemCardPriority.innerHTML = `Priority: ${todoItem.priority}`;
+
+                // Change todoItem's displayed property to true
+                todoItem.displayed = true;
+
+                // Append info to card div
+                itemCardDiv.appendChild(itemCardTitle);
+                itemCardDiv.appendChild(itemCardDescription);
+                itemCardDiv.appendChild(itemCardDate);
+                itemCardDiv.appendChild(itemCardPriority);
+
+                // Append card div to container
+                todoItemsContainer.appendChild(itemCardDiv);
+
+                
+            };
+        });
+    };
 };
 
 
@@ -144,6 +193,12 @@ function createTodoItem() {
 
     // Handle user input for creating a new Todo Item
     createTodoButton.addEventListener('click', () => {
+
+        // Error handling on all the input fields 
+        for (let i = 0; i < todoInputFields.length; i++) {
+            if (todoInputFields[i].value.length < 1) return alert("All Fields Required");
+        }
+
         const newTodoTitle = inputTitle.value;
         const newTodoDescription = inputDescription.value;
         const newTodoDueDate = inputDueDate.value;
@@ -159,7 +214,10 @@ function createTodoItem() {
         todoInputFields.forEach((field) => {field.value = ''});
 
         // Remove todo creation window
-        return todoCreation.style.display = 'none';
+        todoCreation.style.display = 'none';
+
+        // Run displayTodo function
+        return displayTodoSection();
     });
 };
 createTodoItem();
