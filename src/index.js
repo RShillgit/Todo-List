@@ -8,6 +8,7 @@ const inputProjectName = document.getElementById('projectName');
 const createProjectButton = document.getElementById('createProject')
 const currentProjects = document.querySelector('.projects');
 
+const todoSection = document.querySelector('.todoSection');
 const createNewTodoButton = document.getElementById('createNewTodo');
 const createTodoButton = document.getElementById('createTodo');
 const todoCreation = document.querySelector('.todoItemCreation');
@@ -25,6 +26,10 @@ let  projects = [];
 function todoProject(name) {
     this.name = name;
     this.info = [];
+    this.selected = false;
+}
+todoProject.prototype.select = function() {
+    this.selected = true;
 }
 
 // Factory function that creates Todo Item objects
@@ -48,11 +53,12 @@ function projectHandler() {
         projectFolder.classList = 'projectFolder';
         projectFolder.innerText = project.name;
     
-        console.log(project)
         currentProjects.appendChild(projectFolder); 
     })
-};
 
+    // run the project selector function
+    return projectSelector();
+};
 
 
 // Handles Project Creation and Selection
@@ -81,6 +87,54 @@ function sidebarInteraction() {
 sidebarInteraction();
 
 
+// Function that allows user to select a project 
+function projectSelector() {
+   
+    // If there are no projcets then return
+    if (projects.length < 1) return;
+
+    else {
+         // Get all projects
+        const allProjects = document.querySelectorAll('.projectFolder');
+
+        // Add event listener to all of the projects
+        allProjects.forEach(projectFolder => {
+            projectFolder.addEventListener('click', (e) => {
+
+                // Variable to hold selected project
+                let selectedProject;
+                
+                for (let i = 0; i < projects.length; i++) {
+                    // Set all of the object's selected property to false
+                    projects[i].selected = false;
+
+
+                    // Get selected project, save it and change its selected property to true
+                    if (projects[i].name == e.target.innerHTML) {
+                        projects[i].selected = true
+                        selectedProject = projects[i];
+                    };
+                };
+
+                // Send selected project object to viewTodoSection function
+                return vewTodoSection(selectedProject);
+            });
+        });
+    }; 
+};
+
+
+function vewTodoSection(project) {
+    // Display todoSection
+    todoSection.style.display = 'Flex';
+
+    console.log(project)
+    console.log(project.info)
+
+    // Handle creating and displaying new todos? 
+};
+
+// This function should only run when a project is selected
 function todoInteration() {
     createNewTodoButton.addEventListener('click', () => {return todoCreation.style.display = 'Flex'});
 

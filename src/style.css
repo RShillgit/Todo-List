@@ -57,3 +57,7 @@
     gap: 10px;
 }
 
+.todoSection {
+    display: none;
+    flex-direction: column;
+}
