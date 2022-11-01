@@ -9,6 +9,7 @@ const createProjectButton = document.getElementById('createProject')
 const currentProjects = document.querySelector('.projects');
 
 const todoSection = document.querySelector('.todoSection');
+const todoItemsContainer = document.querySelector('.todoItems');
 const createNewTodoButton = document.getElementById('createNewTodo');
 const createTodoButton = document.getElementById('createTodo');
 const todoCreation = document.querySelector('.todoItemCreation');
@@ -29,9 +30,6 @@ function todoProject(name) {
     this.name = name;
     this.info = [];
     this.selected = false;
-}
-todoProject.prototype.select = function() {
-    this.selected = true;
 }
 
 // Factory function that creates Todo Item objects
@@ -112,6 +110,16 @@ function projectSelector() {
                     // Set all of the object's selected properties to false
                     projects[i].selected = false;
 
+                    // If user selected a project previously
+                    if (selectedProject != undefined) {
+
+                        // Clear all todo items from container
+                        todoItemsContainer.innerHTML = '';
+
+                        // Make todo items display properties false
+                        selectedProject.info.forEach(todoItem => todoItem.displayed = false);
+                    }
+
                     // Get selected project, save it and change its selected property to true
                     if (projects[i].name == e.target.innerHTML) {
                         projects[i].selected = true
@@ -128,6 +136,7 @@ function projectSelector() {
 
 
 function displayTodoSection() {
+    console.log(selectedProject);
 
     // Display todoSection
     todoSection.style.display = 'Flex';
@@ -138,9 +147,6 @@ function displayTodoSection() {
 
             // If the item is not displayed yet
             if (todoItem.displayed == false) {
-
-                // Div that holds todo Items
-                const todoItemsContainer = document.querySelector('.todoItems'); 
 
                 // Create a card that displays the todo item information
                 const itemCardDiv = document.createElement('div');
@@ -174,7 +180,6 @@ function displayTodoSection() {
                 // Append card div to container
                 todoItemsContainer.appendChild(itemCardDiv);
 
-                
             };
         });
     };
