@@ -21,6 +21,8 @@ const inputPriority = document.getElementById('priority');
 // Array of Projects
 let  projects = [];
 
+// Variable to hold selected project
+let selectedProject;
 
 // Factory function that creates projects
 function todoProject(name) {
@@ -97,48 +99,50 @@ function projectSelector() {
          // Get all projects
         const allProjects = document.querySelectorAll('.projectFolder');
 
-        // Add event listener to all of the projects
         allProjects.forEach(projectFolder => {
-            projectFolder.addEventListener('click', (e) => {
 
-                // Variable to hold selected project
-                let selectedProject;
-                
+            projectFolder.addEventListener('click', (e) => {    
+    
                 for (let i = 0; i < projects.length; i++) {
-                    // Set all of the object's selected property to false
-                    projects[i].selected = false;
 
+                    // Set all of the object's selected properties to false
+                    projects[i].selected = false;
 
                     // Get selected project, save it and change its selected property to true
                     if (projects[i].name == e.target.innerHTML) {
                         projects[i].selected = true
                         selectedProject = projects[i];
+
+                        // Send selected project object to viewTodoSection function
+                        return displayTodoSection();
                     };
                 };
-
-                // Send selected project object to viewTodoSection function
-                return vewTodoSection(selectedProject);
             });
         });
     }; 
 };
 
 
-function vewTodoSection(project) {
+function displayTodoSection() {
+
     // Display todoSection
     todoSection.style.display = 'Flex';
 
-    console.log(project)
-    console.log(project.info)
-
-    // Handle creating and displaying new todos? 
+    // Check the project for any todo items and display them  
 };
 
-// This function should only run when a project is selected
-function todoInteration() {
-    createNewTodoButton.addEventListener('click', () => {return todoCreation.style.display = 'Flex'});
 
-    // Handles user input for creating a new Todo Item
+function createTodoItem() {
+
+    // If user clicks Create New Todo button render todo form
+    createNewTodoButton.addEventListener('click', () => {
+
+        if (todoCreation.style.display === 'flex') return todoCreation.style.display = 'none';
+        else return todoCreation.style.display = 'flex';
+
+    });
+
+    // Handle user input for creating a new Todo Item
     createTodoButton.addEventListener('click', () => {
         const newTodoTitle = inputTitle.value;
         const newTodoDescription = inputDescription.value;
@@ -147,20 +151,17 @@ function todoInteration() {
 
         // Create new todoItem with these values
         const todoObject = new todoItem(newTodoTitle, newTodoDescription, newTodoDueDate, newTodoPriority);
-        console.log(todoObject);
+        
+        // Push new todoItem to the project's info array
+        selectedProject.info.push(todoObject);
 
         // Clear input fields 
-        todoInputFields.forEach(field => field.value = '');
+        todoInputFields.forEach((field) => {field.value = ''});
 
         // Remove todo creation window
-        todoCreation.style.display = 'none';
-
-        // Add this todo item to the selected project
-
-        // Send this object to a todo card display function
+        return todoCreation.style.display = 'none';
     });
-}
-todoInteration();
-
+};
+createTodoItem();
 
 
