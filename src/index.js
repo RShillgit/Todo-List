@@ -86,6 +86,11 @@ function sidebarInteraction() {
 
         // Error Handling
         if (inputProjectName.value.length < 1) return; 
+        for (let i = 0; i < projects.length; i++) {
+            if(inputProjectName.value == projects[i].name) {
+                return alert('A project with that name already exists.');
+            }
+        }
 
         // Make new project object
         const projectObject = new todoProject(inputProjectName.value)
@@ -238,10 +243,15 @@ function createTodoItem() {
     // Handle user input for creating a new Todo Item
     createTodoButton.addEventListener('click', () => {
 
-        // Error handling on all the input fields 
+        // Error handling 
         for (let i = 0; i < todoInputFields.length; i++) {
             if (todoInputFields[i].value.length < 1) return alert("All Fields Required");
         }
+        for (let i = 0; i < selectedProject.info.length; i++) {
+            // If title exists render error
+            if (inputTitle.value == selectedProject.info[i].title) {return alert('A todo with that title already exists.')};
+        }
+
 
         const newTodoTitle = inputTitle.value;
         const newTodoDescription = inputDescription.value;
@@ -375,6 +385,8 @@ function editItem(e) {
     // Submit Changes button event listener
     submitChangesBtn.addEventListener('click', () => {
 
+        
+
         // Get the values of each input field 
         const editedTitle = document.querySelector('.itemCardEditing').querySelector('#editedTitle');
         const editedDescription = document.querySelector('.itemCardEditing').querySelector('#editedDescription');
@@ -383,6 +395,10 @@ function editItem(e) {
 
         // Get the current object
         for (let i = 0; i < selectedProject.info.length; i++) {
+
+            // Error handling for same titles
+            if (selectedProject.info[i].title == editedTitle.value) {return alert('A todo with that title already exists.')}
+
             if(selectedProject.info[i].title == todoItemForEdit.id) {
 
                 // Update the object's values
@@ -390,6 +406,7 @@ function editItem(e) {
                 selectedProject.info[i].description = editedDescription.value;
                 selectedProject.info[i].dueDate = editedDueDate.value;
                 selectedProject.info[i].priority = editedPriority.value;
+                
             }
             // Set all of the projects displayed values to false so they will be properly rerendered
             selectedProject.info[i].displayed = false;
