@@ -136,7 +136,6 @@ function projectSelector() {
 
 
 function displayTodoSection() {
-    console.log(selectedProject);
 
     // Display todoSection
     todoSection.style.display = 'Flex';
@@ -151,6 +150,22 @@ function displayTodoSection() {
                 // Create a card that displays the todo item information
                 const itemCardDiv = document.createElement('div');
                 itemCardDiv.classList = 'itemCard';
+                // Set the cards id to the objects title so it can be identified later
+                itemCardDiv.setAttribute('id', todoItem.title);
+
+                // Div that will hold the edit and delete buttons
+                const alterDiv = document.createElement('div');
+                alterDiv.classList = 'alterButtons';
+
+                // Edit button
+                const editButton = document.createElement('button');
+                editButton.setAttribute('id', 'edit');
+                editButton.innerHTML = 'edit';  // Can be delete once replaced with image
+
+                // Delete button
+                const deleteButton = document.createElement('button');
+                deleteButton.setAttribute('id', 'delete');
+                deleteButton.innerHTML = 'delete'; // Can be delete once replaced with image
 
                 // Title
                 const itemCardTitle = document.createElement('p');
@@ -171,7 +186,12 @@ function displayTodoSection() {
                 // Change todoItem's displayed property to true
                 todoItem.displayed = true;
 
+                // Apeend buttons to alter div
+                alterDiv.appendChild(editButton);
+                alterDiv.appendChild(deleteButton);
+
                 // Append info to card div
+                itemCardDiv.appendChild(alterDiv);
                 itemCardDiv.appendChild(itemCardTitle);
                 itemCardDiv.appendChild(itemCardDescription);
                 itemCardDiv.appendChild(itemCardDate);
@@ -182,7 +202,10 @@ function displayTodoSection() {
 
             };
         });
-    };
+
+    return alterTodoItem();
+    }
+    else return;
 };
 
 
@@ -227,4 +250,38 @@ function createTodoItem() {
 };
 createTodoItem();
 
+function alterTodoItem() {
+
+    // Buttons
+    const editBtns = document.querySelectorAll('#edit');
+    const deleteBtns = document.querySelectorAll('#delete');
+
+    if (deleteBtns != undefined && editBtns != undefined) {
+        
+        deleteBtns.forEach(delBtn => delBtn.addEventListener('click', (e) => {
+
+            // The todo item the user interacted with
+            const selectedTodoItem = e.target.parentElement.parentElement
+
+            // Delete parent element from DOM (the todo item)
+
+            // Delete todoObject from project's info array
+            for (let i = 0; i < selectedProject.info.length; i++) {
+
+                // If the title of a todoObject matches the selectedTodoItem's id
+                if (selectedProject.info[i].title == selectedTodoItem.id) {
+
+                    // Remove the todo Object from the projects array
+                    selectedProject.info.splice(i, 1);
+                };
+            };
+        }))
+    }
+    else return;
+
+    // When i run this return, i get a max call stack size error, but I want to run the displayTodoSection function again after I delete an item
+    // that way it reloads the todo section with the updated todo items
+    // return displayTodoSection();
+    
+};
 
