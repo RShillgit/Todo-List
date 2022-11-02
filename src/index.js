@@ -264,6 +264,56 @@ function editItem(e) {
     const del = document.querySelector('.itemCardEditing').querySelector('#delete');
     del.style.display = 'none';
 
+    // "Remove" each paragraph
+    const paragraphs = document.querySelector('.itemCardEditing').querySelectorAll('p');
+    paragraphs.forEach(p => p.style.display = 'none');
+
+    // Find the object that is being edited
+    for (let i = 0; i < selectedProject.info.length; i++) {
+        if (selectedProject.info[i].title == todoItemForEdit.id) {
+
+            // Add input fields for each item property
+            // Title
+            const editTitleLabel = document.createElement('label');
+            editTitleLabel.innerHTML = 'Title: ';
+            const editTitle = document.createElement('input');
+            editTitle.setAttribute('id', 'editedTitle');
+            editTitle.value = selectedProject.info[i].title;
+            editTitleLabel.appendChild(editTitle);
+            
+            // Description
+            const editDescriptionLabel = document.createElement('label')
+            editDescriptionLabel.innerHTML = 'Description: ';
+            const editDescription = document.createElement('input');
+            editDescription.setAttribute('id', 'editedDescription');
+            editDescription.value = selectedProject.info[i].description;
+            editDescriptionLabel.appendChild(editDescription);
+
+            // Due Date
+            const editDueDateLabel = document.createElement('label')
+            editDueDateLabel.innerHTML = 'Due Date: ';
+            const editDueDate = document.createElement('input');
+            editDueDate.setAttribute('id', 'editedDueDate');
+            editDueDate.value = selectedProject.info[i].dueDate;
+            editDueDateLabel.appendChild(editDueDate);
+
+            // Priority
+            const editPriorityLabel = document.createElement('label')
+            editPriorityLabel.innerHTML = 'Priority: ';
+            const editPriority = document.createElement('input');
+            editPriority.setAttribute('id', 'editedPriority');
+            editPriority.value = selectedProject.info[i].priority;
+            editPriorityLabel.appendChild(editPriority);
+
+            // Add input fields to item card editing div
+            todoItemForEdit.appendChild(editTitleLabel);
+            todoItemForEdit.appendChild(editDescriptionLabel);
+            todoItemForEdit.appendChild(editDueDateLabel);
+            todoItemForEdit.appendChild(editPriorityLabel);
+
+        };
+    }
+
     // Add an exit button to the alterButtons div
     const alterButtonsDiv = document.querySelector('.itemCardEditing').querySelector('.alterButtons');
     const exitBtn = document.createElement('button');
@@ -283,7 +333,11 @@ function editItem(e) {
     todoItemForEdit.appendChild(submitChangesDiv);
 
     // Exit button event listener
-    exitBtn.addEventListener('click', (e) => {
+    exitBtn.addEventListener('click', () => {
+
+        // Remove edit input fields
+        const editLabels = document.querySelector('.itemCardEditing').querySelectorAll('label')
+        editLabels.forEach(label => label.remove());
 
         // Set class back to normal
         todoItemForEdit.classList = 'itemCard';
@@ -294,20 +348,46 @@ function editItem(e) {
         // Remove submit changes div
         submitChangesDiv.remove();
 
-        // Show edit and delete buttons
+        // Show old input fields, edit button, and delete button
+        paragraphs.forEach(p => p.style.display = 'flex');
         edit.style.display = 'block';
         del.style.display = 'block';
 
     });
 
     // Submit Changes button event listener
+    submitChangesBtn.addEventListener('click', () => {
 
-    // Change each paragraph to an input field with the value being the pre-edited value
-    // Once changes are submitted change class back to original with changed information
-    // Or change the objects information first then run the display todosection function so it regenerates
-    // To change todoItem's info do same loop as delete button
-    // then change selectedProject.info.<Field Changed> to the new information 
+        // Get the values of each input field 
+        const editedTitle = document.querySelector('.itemCardEditing').querySelector('#editedTitle');
+        const editedDescription = document.querySelector('.itemCardEditing').querySelector('#editedDescription');
+        const editedDueDate = document.querySelector('.itemCardEditing').querySelector('#editedDueDate');
+        const editedPriority = document.querySelector('.itemCardEditing').querySelector('#editedPriority');
 
+        // Get the current object
+        for (let i = 0; i < selectedProject.info.length; i++) {
+            if(selectedProject.info[i].title == todoItemForEdit.id) {
+
+                // Update the object's values
+                selectedProject.info[i].title = editedTitle.value;
+                selectedProject.info[i].description = editedDescription.value;
+                selectedProject.info[i].dueDate = editedDueDate.value;
+                selectedProject.info[i].priority = editedPriority.value;
+                console.log(selectedProject.info);
+            }
+            // Set all of the projects displayed values to false so they will be properly rerendered
+            selectedProject.info[i].displayed = false;
+        }
+
+        // Clear all todoItems
+        todoItemsContainer.innerHTML = '';
+
+        // Remove edit screen
+        todoItemForEdit.remove();
+
+        // Run displayTodo function
+        return displayTodoSection();
+    });
 };
 
 function deleteItem(e) {
