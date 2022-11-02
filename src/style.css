@@ -61,3 +61,22 @@
     display: none;
     flex-direction: column;
 }
+.itemCard, .itemCardEditing {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+.itemCard > .alterButtons, .itemCardEditing > .alterButtons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.itemCardEditing {
+    width: 60vw;
+    background-color: #eeeeee;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}

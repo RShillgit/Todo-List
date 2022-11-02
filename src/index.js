@@ -161,11 +161,13 @@ function displayTodoSection() {
                 const editButton = document.createElement('button');
                 editButton.setAttribute('id', 'edit');
                 editButton.innerHTML = 'edit';  // Can be delete once replaced with image
+                editButton.addEventListener('click', (e) => editItem(e));
 
                 // Delete button
                 const deleteButton = document.createElement('button');
                 deleteButton.setAttribute('id', 'delete');
                 deleteButton.innerHTML = 'delete'; // Can be delete once replaced with image
+                deleteButton.addEventListener('click', (e) => deleteItem(e));
 
                 // Title
                 const itemCardTitle = document.createElement('p');
@@ -202,10 +204,7 @@ function displayTodoSection() {
 
             };
         });
-
-    return alterTodoItem();
     }
-    else return;
 };
 
 
@@ -250,34 +249,83 @@ function createTodoItem() {
 };
 createTodoItem();
 
-function alterTodoItem() {
 
-    // Buttons
-    const editBtns = document.querySelectorAll('#edit');
-    const deleteBtns = document.querySelectorAll('#delete');
+function editItem(e) {
 
-    if (deleteBtns != undefined && editBtns != undefined) {
-        
-        deleteBtns.forEach(delBtn => delBtn.addEventListener('click', (e) => {
+    // The todo item the user interacted with
+    const todoItemForEdit = e.target.parentElement.parentElement
 
-            // The todo item the user interacted with
-            const selectedTodoItem = e.target.parentElement.parentElement
+    // Change the class of todoItemForEdit so it expands to fill the page
+    todoItemForEdit.classList = 'itemCardEditing';
 
-            // Delete parent element from DOM (the todo item)
-            e.target.parentElement.parentElement.remove();
+    // "Remove" Edit and Delete Button
+    const edit = document.querySelector('.itemCardEditing').querySelector('#edit');
+    edit.style.display = 'none';
+    const del = document.querySelector('.itemCardEditing').querySelector('#delete');
+    del.style.display = 'none';
 
-            // Delete todoObject from project's info array
-            for (let i = 0; i < selectedProject.info.length; i++) {
+    // Add an exit button to the alterButtons div
+    const alterButtonsDiv = document.querySelector('.itemCardEditing').querySelector('.alterButtons');
+    const exitBtn = document.createElement('button');
+    exitBtn.setAttribute('id', 'exit');
+    exitBtn.innerHTML = 'Exit';
+    alterButtonsDiv.appendChild(exitBtn);
 
-                // If the title of a todoObject matches the selectedTodoItem's id
-                if (selectedProject.info[i].title == selectedTodoItem.id) {
+    // Add a submit changes button
+    const submitChangesDiv = document.createElement('div');
+    submitChangesDiv.classList = 'submitChanges';
+    const submitChangesBtn = document.createElement('button')
+    submitChangesBtn.innerHTML = 'Submit Changes';
+    submitChangesBtn.setAttribute('id', 'submitChangesBtn');
 
-                    // Remove the todo Object from the projects array
-                    selectedProject.info.splice(i, 1);
-                };
-            };
-        }))
-    }
-    else return;
+    // Append submit changes button to todo item
+    submitChangesDiv.appendChild(submitChangesBtn);
+    todoItemForEdit.appendChild(submitChangesDiv);
+
+    // Exit button event listener
+    exitBtn.addEventListener('click', (e) => {
+
+        // Set class back to normal
+        todoItemForEdit.classList = 'itemCard';
+
+        // Remove exit button
+        exitBtn.remove();
+
+        // Remove submit changes div
+        submitChangesDiv.remove();
+
+        // Show edit and delete buttons
+        edit.style.display = 'block';
+        del.style.display = 'block';
+
+    });
+
+    // Submit Changes button event listener
+
+    // Change each paragraph to an input field with the value being the pre-edited value
+    // Once changes are submitted change class back to original with changed information
+    // Or change the objects information first then run the display todosection function so it regenerates
+    // To change todoItem's info do same loop as delete button
+    // then change selectedProject.info.<Field Changed> to the new information 
+
 };
 
+function deleteItem(e) {
+
+    // The todo item the user interacted with
+    const todoItemForDeletion = e.target.parentElement.parentElement
+
+    // Delete parent element from DOM (the todo item)
+    todoItemForDeletion.remove();
+
+    // Delete todoObject from project's info array
+    for (let i = 0; i < selectedProject.info.length; i++) {
+
+        // If the title of a todoObject matches the todoItemForDeletion's id
+        if (selectedProject.info[i].title == todoItemForDeletion.id) {
+
+            // Remove the todo Object from the projects array
+            selectedProject.info.splice(i, 1);
+        };
+    };
+}
