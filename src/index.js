@@ -50,10 +50,23 @@ function projectHandler() {
 
     // Create div for the projects
     projects.forEach(project => {
+        // Div
         const projectFolder = document.createElement('div');
         projectFolder.classList = 'projectFolder';
-        projectFolder.innerText = project.name;
-    
+
+        // Name
+        const projectFolderName = document.createElement('p');
+        projectFolderName.innerHTML = project.name;
+        projectFolder.setAttribute('id', project.name);
+
+        // Delete button
+        const projectDeleteButton = document.createElement('button');
+        projectDeleteButton.innerHTML = "x" // Change for an icon later
+        projectDeleteButton.addEventListener('click', (e) => deleteProject(e));
+
+        // Append everything to the project folder
+        projectFolder.appendChild(projectFolderName);
+        projectFolder.appendChild(projectDeleteButton);
         currentProjects.appendChild(projectFolder); 
     })
 
@@ -64,6 +77,8 @@ function projectHandler() {
 
 // Handles Project Creation and Selection
 function sidebarInteraction() {
+
+    if (projects.length < 1) { currentProjects.innerHTML = 'No Projects to Display'};
 
     // Handle User Project Creation
     newProjectButton.addEventListener('click', () => {return projectCreation.style.display = 'Flex'});
@@ -102,6 +117,8 @@ function projectSelector() {
         const allProjects = document.querySelectorAll('.projectFolder');
 
         allProjects.forEach(projectFolder => {
+
+            const clickableProject = projectFolder.querySelector('p');
 
             projectFolder.addEventListener('click', (e) => {    
     
@@ -373,7 +390,6 @@ function editItem(e) {
                 selectedProject.info[i].description = editedDescription.value;
                 selectedProject.info[i].dueDate = editedDueDate.value;
                 selectedProject.info[i].priority = editedPriority.value;
-                console.log(selectedProject.info);
             }
             // Set all of the projects displayed values to false so they will be properly rerendered
             selectedProject.info[i].displayed = false;
@@ -408,4 +424,26 @@ function deleteItem(e) {
             selectedProject.info.splice(i, 1);
         };
     };
-}
+};
+
+function deleteProject(e) {
+
+    // Project to be deleted
+    const projectForDeletion = e.target.parentElement
+
+    // Loop through projects array
+    for (let i = 0; i < projects.length; i++) {
+
+        // find the project the user wants to delete
+        if (projects[i].name == projectForDeletion.id) {
+
+            // Remove project from the projects array
+            projects.splice(i, 1);
+
+            // Remove project from the DOM
+            projectForDeletion.remove();
+        }
+    }
+
+    return sidebarInteraction();
+};
