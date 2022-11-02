@@ -264,6 +264,7 @@ function alterTodoItem() {
             const selectedTodoItem = e.target.parentElement.parentElement
 
             // Delete parent element from DOM (the todo item)
+            e.target.parentElement.parentElement.remove();
 
             // Delete todoObject from project's info array
             for (let i = 0; i < selectedProject.info.length; i++) {
@@ -278,10 +279,5 @@ function alterTodoItem() {
         }))
     }
     else return;
-
-    // When i run this return, i get a max call stack size error, but I want to run the displayTodoSection function again after I delete an item
-    // that way it reloads the todo section with the updated todo items
-    // return displayTodoSection();
-    
 };
 
