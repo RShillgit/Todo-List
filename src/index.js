@@ -3,6 +3,7 @@ import './style.css';
 import trashCanSvg from './images/trashCan.svg'
 import exitSvg from './images/exit.svg'
 import editSvg from './images/edit.svg'
+import gitHubPng from './images/GitHub-Mark.png'
 
 // Elements
 const newProjectButton = document.getElementById('newProject');
@@ -44,8 +45,19 @@ function todoItem(title, description, dueDate, priority) {
     this.displayed = false;
 };
 
-// Get projects from local storage
+// Get projects from local storage and render footer
 window.onload = () => {
+
+    // Create footer
+    const footer = document.querySelector('footer');
+    const gitHubAnc = document.createElement('a');
+    gitHubAnc.href = 'https://github.com/RShillgit/Todo-List';
+    const gitHubImg = document.createElement('img');
+    gitHubImg.src = gitHubPng;
+    gitHubImg.alt = 'Made by RShillgit';
+    
+    gitHubAnc.appendChild(gitHubImg);
+    footer.appendChild(gitHubAnc);
 
     const storedProjects = JSON.parse(localStorage.getItem('projects'));
 
@@ -58,7 +70,7 @@ window.onload = () => {
     })
 
     if (projects.length > 0) return projectHandler();
-}
+};
 
 
 // Displays projects in the sidebar
@@ -104,9 +116,15 @@ function sidebarInteraction() {
 
     // Create exit button for project creation menu
     const exitBtnHolder = document.querySelector('.exitBtn');
-    const exitBtn = document.createElement('img');
-    exitBtn.src = exitSvg;
-    exitBtnHolder.appendChild(exitBtn);
+    const existingProjExitBtn = document.getElementById('newProjExitBtn');
+
+    // If exitBtn doesn't exist, then make it
+    if (existingProjExitBtn == undefined) {
+        const exitBtn = document.createElement('img');
+        exitBtn.setAttribute('id', 'newProjExitBtn');
+        exitBtn.src = exitSvg;
+        exitBtnHolder.appendChild(exitBtn);
+    }
 
     // Handle User Project Creation
     newProjectButton.addEventListener('click', () => {
@@ -201,9 +219,22 @@ function displayTodoSection() {
     // Display todoSection
     todoSection.style.display = 'Flex';
 
-    const todoSectionTitle = document.querySelector('.currentProject');
-    todoSectionTitle.innerHTML = selectedProject.name;
+    // Check for existing title
+    const existingTitle = document.getElementById('todoSectionTitle');
 
+    // If it doesn't exist, create it
+    if (existingTitle == undefined) {
+
+        // Make title of todo section the name of the project
+        const todoSectionHeader = document.querySelector('.currentProject');
+        const todoSectionTitle = document.createElement('p');
+        todoSectionTitle.setAttribute('id', 'todoSectionTitle');
+        todoSectionTitle.innerHTML = selectedProject.name;
+        todoSectionHeader.appendChild(todoSectionTitle);
+    }
+    // If it does, update the title
+    else existingTitle.innerHTML = selectedProject.name;
+    
     // Check the project for any todo items and display them  
     if (selectedProject.info.length >= 1) {
         selectedProject.info.forEach(todoItem => {
@@ -494,7 +525,6 @@ function deleteItem(e) {
 };
 
 function deleteProject(e) {
-    console.log(e.target);
 
     // Project to be deleted
     const projectForDeletion = e.target.parentElement

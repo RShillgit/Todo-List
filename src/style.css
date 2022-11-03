@@ -1,9 +1,37 @@
+html {
+    background-color: #eeeeee;
+    font-size: large;
+}
+
 .header {
     display: flex;
     justify-content: center;
-    font-size: 30px;
+    border-bottom: 2px solid #114C5B;
+    margin-bottom: 10px;
+}
+.header p {
+    margin: 24px;
+}
+footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    border-top: 2px solid #114C5B;
+}
+footer a {
+    align-items: center;
+    padding: 10px;
+}
+footer img:hover {
+    cursor: pointer;
+    transform: rotate(360deg);
+    transition: all 0.3s ease;
+}
+
+#todoSectionTitle, .header {
+    color: #B18c3E;
     font-weight: 600;
-    height: 10vh;
+    font-size: xxx-large;
 }
 
 .content {
@@ -16,23 +44,49 @@ img {
     width: 25px;
 }
 
-.sidePannel, .itemCard {
-    border: 1px solid red;
+button {
+    border: none;
+    background-color: #B18c3E;
+    color: #114C5B;
+    font-size:medium;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
 }
-.todoSection, .createTodoButton, .todoItems {
-    border: 1px solid blue;
+button:hover, .projectFolder > p:hover, .itemCard img:hover, img:hover {
+    cursor: pointer;
 }
-
-.sidePannel, .todoSection, .createTodoButton, .todoItems, .itemCard {
-    padding: 20px;
+button:active {
+    border: 1px solid #114C5B;
+}
+#edit:active, #delete:active, .exitBtn:active, #exit:active {
+    filter: invert(100%) sepia(73%) saturate(7045%) hue-rotate(179deg) brightness(118%) contrast(104%);
+}
+.projectFolder img, footer img {
+    filter: invert(23%) sepia(26%) saturate(1261%) hue-rotate(145deg) brightness(95%) contrast(93%);
 }
 
 .sidePannel {
     display: flex;
     flex-direction: column;
-    width: 10vw;
+    min-width: 10rem;
+    flex-shrink: 0;
+    height: 100%;
 }
-
+.sidePannel .createNewProject {
+    height: 3rem;
+    align-self: center;
+}
+.sidePannelContainer, .todoSection {
+    background-color: #BBB9BA;
+}
+.sidePannelContainer, .todoSection, .createTodoButton, .todoItems, .itemCard {
+    padding: 20px;
+}
+.sidePannelContainer, .todoSection, .todoItemCreation, .projectCreation, .itemCardEditing, .itemCard {
+    border-radius: 1rem;
+}
 .projects {
     max-width: 100%;
 }
@@ -45,7 +99,9 @@ img {
     gap: 10px;
 }
 .projectFolder > p {
-    border: 1px solid black;
+    border: 2px solid #114C5B;
+    background-color: #114C5B;
+    color: #BBB9BA;
     border-radius: 10px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -54,34 +110,73 @@ img {
     width: 90%;
     overflow: hidden;
 }
+.projectFolder > p:hover {
+    background-color: #235E6D;
+    border: 2px solid #235E6D;
+}
+.projectFolder > p:active {
+    border: 2px solid #B18c3E;
+}
 
-.todoItemCreation, .projectCreation {
-    background-color: gray;
+
+.todoItemCreation, .projectCreation, .itemCardEditing {
+    background-color: #347788;
     display: none;
     position: absolute;
     left: 0;
     right: 0;
     margin-left: auto;
     margin-right: auto;
-    width: 30%;
-    padding: 20px;
+    width: 40%;
+    z-index: 1;
+    height: 10rem;
 }
 .projectCreationInput, .todoItemCreationInput {
     display: flex;
     width: 100%;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
-.projectCreationInput > input {
+.projectCreationInput p {
+    color: lightgray;
+    margin: 0;
+    font-size: large;
+    margin-bottom: 5px;
+}
+.projectCreationInput > input, .itemCardEditing input, .todoItemCreationInput input {
+    color: #114C5B;
+    background-color: #BBB9BA;
+    border: none;
+    font-size: medium;
     text-align: center;
-    margin-bottom: 10px;
+}
+.projectCreationInput > input:focus, .itemCardEditing input:focus, .todoItemCreationInput input:focus {
+    outline: none;
+}
+.exitBtn, #exit {
+    filter: invert(87%) sepia(5%) saturate(68%) hue-rotate(277deg) brightness(89%) contrast(81%);
+}
+.exitBtn {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
-.todoItems {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: auto;
-    gap: 10px;
+.currentProject {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    font-size: xxx-large;
+    padding-left: inherit;
+    padding-right: inherit;
+    align-items: center;
+    border-bottom: 2px solid #114C5B;
+}
+.currentProject p {
+    margin: 0;
 }
 
 .todoSection {
@@ -90,22 +185,38 @@ img {
     width: 80vw;
     overflow: auto;
 }
+.todoItems {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 17rem));
+    grid-gap: 2rem;
+    justify-content: center;
+}
 .itemCard, .itemCardEditing {
     display: flex;
     flex-direction: column;
     padding: 10px;
+    transition: all 1s ease;
 }
 .itemCard > .alterButtons, .itemCardEditing > .alterButtons {
     display: flex;
     justify-content: flex-end;
 }
-
+.itemCard {
+    background-color: #114C5B;
+    color: #BBB9BA;
+    width: auto;
+}
+.itemCard img {
+    filter: invert(87%) sepia(5%) saturate(68%) hue-rotate(277deg) brightness(89%) contrast(81%);
+}
 .itemCardEditing {
-    width: 60vw;
-    background-color: #eeeeee;
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
+    position: relative;
+    top: 40%;
+    left: 40%;
+    width: 30rem;
+    z-index: 3;
+}
+.itemCardEditing label,  .todoItemCreationInput label {
+    color: #eeeeee;
+    font-size: larger;
 }
