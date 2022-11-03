@@ -1,9 +1,9 @@
 import _, { compact } from 'lodash';
 import './style.css';
-import trashCanSvg from './images/trashCan.svg'
-import exitSvg from './images/exit.svg'
-import editSvg from './images/edit.svg'
-import gitHubPng from './images/GitHub-Mark.png'
+import trashCanSvg from './modules/images/trashCan.svg'
+import exitSvg from './modules/images/exit.svg'
+import editSvg from './modules/images/edit.svg'
+import gitHubPng from './modules/images/GitHub-Mark.png'
 
 // Elements
 const newProjectButton = document.getElementById('newProject');
@@ -68,10 +68,9 @@ window.onload = () => {
         
         projects.push(proj)
     })
-
     if (projects.length > 0) return projectHandler();
+    
 };
-
 
 // Displays projects in the sidebar
 function projectHandler() {
@@ -308,8 +307,15 @@ function createTodoItem() {
     // If user clicks Create New Todo button render todo form
     createNewTodoButton.addEventListener('click', () => {
 
-        if (todoCreation.style.display === 'flex') return todoCreation.style.display = 'none';
-        else return todoCreation.style.display = 'flex';
+        // Add exit button 
+        const exitBtnImg = document.getElementById('createTodoExitBtn');
+        exitBtnImg.src = exitSvg;
+    
+        // Display todo creation input screen
+        todoCreation.style.display = 'flex';
+
+        // Exit Button function
+        exitBtnImg.addEventListener('click', () => {return todoCreation.style.display = 'none'});
 
     });
 
@@ -472,7 +478,7 @@ function editItem(e) {
         for (let i = 0; i < selectedProject.info.length; i++) {
 
             // Error handling for same titles
-            if (selectedProject.info[i].title == editedTitle.value) {return alert('A todo with that title already exists.')}
+            if (selectedProject.info[i].title == editedTitle.value && selectedProject.info[i].title != todoItemForEdit.id) {return alert('A todo with that title already exists.')}
 
             if(selectedProject.info[i].title == todoItemForEdit.id) {
 
