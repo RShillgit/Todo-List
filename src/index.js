@@ -41,6 +41,22 @@ function todoItem(title, description, dueDate, priority) {
     this.displayed = false;
 };
 
+// Get projects from local storage
+window.onload = () => {
+
+    const storedProjects = JSON.parse(localStorage.getItem('projects'));
+
+    storedProjects.forEach(proj => {
+
+        // Set projects todo item displayed properties to false so they will display properly
+        for(let i = 0; i < proj.info.length; i++) {proj.info[i].displayed = false;}
+        
+        projects.push(proj)
+    })
+
+    if (projects.length > 0) return projectHandler();
+}
+
 
 // Displays projects in the sidebar
 function projectHandler() {
@@ -78,7 +94,10 @@ function projectHandler() {
 // Handles Project Creation and Selection
 function sidebarInteraction() {
 
-    if (projects.length < 1) { currentProjects.innerHTML = 'No Projects to Display'};
+    if (projects.length < 1) { 
+        currentProjects.innerHTML = 'No Projects to Display'
+        todoSection.style.display = 'none';
+    }
 
     // Handle User Project Creation
     newProjectButton.addEventListener('click', () => {return projectCreation.style.display = 'Flex'});
@@ -97,6 +116,10 @@ function sidebarInteraction() {
 
         // Push new project object to projects array
         projects.push(projectObject);
+
+        // Add projects array to local storage
+        localStorage.setItem('projects', JSON.stringify(projects));
+        console.log(projects)
     
         // Clear input field 
         inputProjectName.value = '';
@@ -123,13 +146,11 @@ function projectSelector() {
 
         allProjects.forEach(projectFolder => {
 
-            const clickableProject = projectFolder.querySelector('p');
-
             projectFolder.addEventListener('click', (e) => {    
     
                 for (let i = 0; i < projects.length; i++) {
 
-                    // Set all of the object's selected properties to false
+                    // Set all of the objects' selected properties to false
                     projects[i].selected = false;
 
                     // If user selected a project previously
@@ -147,7 +168,7 @@ function projectSelector() {
                         projects[i].selected = true
                         selectedProject = projects[i];
 
-                        // Send selected project object to viewTodoSection function
+                        // Send selected project object to displayTodoSection function
                         return displayTodoSection();
                     };
                 };
@@ -161,6 +182,9 @@ function displayTodoSection() {
 
     // Display todoSection
     todoSection.style.display = 'Flex';
+
+    const todoSectionTitle = document.querySelector('.currentProject');
+    todoSectionTitle.innerHTML = selectedProject.name;
 
     // Check the project for any todo items and display them  
     if (selectedProject.info.length >= 1) {
@@ -263,6 +287,9 @@ function createTodoItem() {
         
         // Push new todoItem to the project's info array
         selectedProject.info.push(todoObject);
+        
+        // Update local storage
+        localStorage.setItem('projects', JSON.stringify(projects))
 
         // Clear input fields 
         todoInputFields.forEach((field) => {field.value = ''});
@@ -320,6 +347,7 @@ function editItem(e) {
             const editDueDateLabel = document.createElement('label')
             editDueDateLabel.innerHTML = 'Due Date: ';
             const editDueDate = document.createElement('input');
+            editDueDate.type = 'date';
             editDueDate.setAttribute('id', 'editedDueDate');
             editDueDate.value = selectedProject.info[i].dueDate;
             editDueDateLabel.appendChild(editDueDate);
@@ -385,8 +413,6 @@ function editItem(e) {
     // Submit Changes button event listener
     submitChangesBtn.addEventListener('click', () => {
 
-        
-
         // Get the values of each input field 
         const editedTitle = document.querySelector('.itemCardEditing').querySelector('#editedTitle');
         const editedDescription = document.querySelector('.itemCardEditing').querySelector('#editedDescription');
@@ -410,6 +436,9 @@ function editItem(e) {
             }
             // Set all of the projects displayed values to false so they will be properly rerendered
             selectedProject.info[i].displayed = false;
+
+            // Update local stoarge
+            localStorage.setItem('projects', JSON.stringify(projects))
         }
 
         // Clear all todoItems
@@ -437,8 +466,11 @@ function deleteItem(e) {
         // If the title of a todoObject matches the todoItemForDeletion's id
         if (selectedProject.info[i].title == todoItemForDeletion.id) {
 
-            // Remove the todo Object from the projects array
+            // Remove the todo Object from the project's array
             selectedProject.info.splice(i, 1);
+
+            // Update local storage
+            localStorage.setItem('projects', JSON.stringify(projects))
         };
     };
 };
@@ -456,6 +488,9 @@ function deleteProject(e) {
 
             // Remove project from the projects array
             projects.splice(i, 1);
+
+            // Update local storage
+            localStorage.setItem('projects', JSON.stringify(projects))
 
             // Remove project from the DOM
             projectForDeletion.remove();
