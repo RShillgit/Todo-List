@@ -1,5 +1,8 @@
-import _ from 'lodash';
+import _, { compact } from 'lodash';
 import './style.css';
+import trashCanSvg from './images/trashCan.svg'
+import exitSvg from './images/exit.svg'
+import editSvg from './images/edit.svg'
 
 // Elements
 const newProjectButton = document.getElementById('newProject');
@@ -76,8 +79,8 @@ function projectHandler() {
         projectFolder.setAttribute('id', project.name);
 
         // Delete button
-        const projectDeleteButton = document.createElement('button');
-        projectDeleteButton.innerHTML = "x" // Change for an icon later
+        const projectDeleteButton = document.createElement('img');
+        projectDeleteButton.src = trashCanSvg;
         projectDeleteButton.addEventListener('click', (e) => deleteProject(e));
 
         // Append everything to the project folder
@@ -99,8 +102,24 @@ function sidebarInteraction() {
         todoSection.style.display = 'none';
     }
 
+    // Create exit button for project creation menu
+    const exitBtnHolder = document.querySelector('.exitBtn');
+    const exitBtn = document.createElement('img');
+    exitBtn.src = exitSvg;
+    exitBtnHolder.appendChild(exitBtn);
+
     // Handle User Project Creation
-    newProjectButton.addEventListener('click', () => {return projectCreation.style.display = 'Flex'});
+    newProjectButton.addEventListener('click', () => {
+
+        // Clear input field
+        inputProjectName.value = '';
+        
+        projectCreation.style.display = 'Flex'
+    });
+
+    const newProjExitBtn = document.querySelector('.exitBtn');
+    newProjExitBtn.addEventListener('click', () => {return projectCreation.style.display = 'none'});
+
     createProjectButton.addEventListener('click', () => {
 
         // Error Handling
@@ -119,7 +138,6 @@ function sidebarInteraction() {
 
         // Add projects array to local storage
         localStorage.setItem('projects', JSON.stringify(projects));
-        console.log(projects)
     
         // Clear input field 
         inputProjectName.value = '';
@@ -204,15 +222,15 @@ function displayTodoSection() {
                 alterDiv.classList = 'alterButtons';
 
                 // Edit button
-                const editButton = document.createElement('button');
+                const editButton = document.createElement('img');
                 editButton.setAttribute('id', 'edit');
-                editButton.innerHTML = 'edit';  // Can be delete once replaced with image
+                editButton.src = editSvg;  
                 editButton.addEventListener('click', (e) => editItem(e));
 
                 // Delete button
-                const deleteButton = document.createElement('button');
+                const deleteButton = document.createElement('img');
                 deleteButton.setAttribute('id', 'delete');
-                deleteButton.innerHTML = 'delete'; // Can be delete once replaced with image
+                deleteButton.src = trashCanSvg; 
                 deleteButton.addEventListener('click', (e) => deleteItem(e));
 
                 // Title
@@ -371,9 +389,9 @@ function editItem(e) {
 
     // Add an exit button to the alterButtons div
     const alterButtonsDiv = document.querySelector('.itemCardEditing').querySelector('.alterButtons');
-    const exitBtn = document.createElement('button');
+    const exitBtn = document.createElement('img');
     exitBtn.setAttribute('id', 'exit');
-    exitBtn.innerHTML = 'Exit';
+    exitBtn.src = exitSvg;
     alterButtonsDiv.appendChild(exitBtn);
 
     // Add a submit changes button
@@ -476,6 +494,7 @@ function deleteItem(e) {
 };
 
 function deleteProject(e) {
+    console.log(e.target);
 
     // Project to be deleted
     const projectForDeletion = e.target.parentElement

@@ -12,6 +12,10 @@
     height: 80vh;
 }
 
+img {
+    width: 25px;
+}
+
 .sidePannel, .itemCard {
     border: 1px solid red;
 }
